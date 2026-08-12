@@ -313,14 +313,12 @@ function App() {
               <section className="recipe-section method-section">
                 <h2>Method</h2>
                 <ol>
-                  {shownRecipe.steps.map((step, index) => (
-                    <li key={`${step}-${index}`}><span>{index + 1}</span><p>{step}</p></li>
-                  ))}
+                  {shownRecipe.steps.map((step, index) => <li key={`${step}-${index}`}>{step}</li>)}
                 </ol>
               </section>
 
               {shownRecipe.notes && (
-                <aside className="recipe-note"><strong>Note</strong><p>{shownRecipe.notes}</p></aside>
+                <aside className="recipe-note"><strong>Note:</strong> {shownRecipe.notes}</aside>
               )}
             </article>
 
