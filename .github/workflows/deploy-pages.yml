@@ -31,10 +31,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        env:
-          VITE_API_URL: https://bapsang-api.bapsang-api-worker.workers.dev
-          VITE_BASE_PATH: /koreanapp/
-        run: npm run build
+        run: npm run build:pages
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
