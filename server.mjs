@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import express from 'express'
-import OpenAI from 'openai'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -9,19 +8,6 @@ const port = Number(process.env.PORT || 8787)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 app.use(express.json({ limit: '16mb' }))
-
-const recipeSchema = {
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    name_kr: { type: 'string' },
-    name_en: { type: 'string' },
-    ingredients: { type: 'array', items: { type: 'string' } },
-    steps: { type: 'array', items: { type: 'string' } },
-    notes: { type: 'string' },
-  },
-  required: ['name_kr', 'name_en', 'ingredients', 'steps', 'notes'],
-}
 
 const prompt = `This image shows a Korean dish. Identify its name in Korean and English. List its likely main ingredients. Then generate a simplified home-cookable recipe with steps, assuming the cook may not have access to specialty Korean ingredients — suggest substitutes where relevant. Respond ONLY with valid JSON in this exact shape: { "name_kr": "", "name_en": "", "ingredients": [], "steps": [], "notes": "" }. No preamble, no markdown fences, just the JSON object.`
 
@@ -48,33 +34,49 @@ app.post('/api/analyze', async (req, res) => {
     return res.status(400).json({ error: 'Please choose a valid image and try again.' })
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(503).json({ error: 'The recipe service is not configured yet. Add OPENAI_API_KEY to your environment.' })
+  if (!process.env.OPENCODE_API_KEY) {
+    return res.status(503).json({ error: 'The recipe service is not configured yet. Add OPENCODE_API_KEY to your environment.' })
   }
 
   try {
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    const response = await openai.responses.create({
-      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-      input: [{
-        role: 'user',
-        content: [
-          { type: 'input_text', text: prompt },
-          { type: 'input_image', image_url: image, detail: 'auto' },
-        ],
-      }],
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'korean_recipe',
-          strict: true,
-          schema: recipeSchema,
-        },
+    const response = await fetch('https://opencode.ai/zen/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENCODE_API_KEY}`,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        model: process.env.OPENCODE_MODEL || 'mimo-v2.5-free',
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: image } },
+          ],
+        }],
+        temperature: 0.2,
+        max_tokens: 4000,
+      }),
     })
 
+    const completion = await response.json().catch(() => null)
+    if (!response.ok) {
+      const providerMessage = completion?.error?.message
+      console.error('OpenCode request failed:', response.status, providerMessage || 'Unknown provider error')
+      if (response.status === 401 || response.status === 403) {
+        return res.status(502).json({ error: 'The OpenCode API key was not accepted. Check OPENCODE_API_KEY and try again.' })
+      }
+      return res.status(502).json({ error: 'OpenCode could not read this dish right now. Please try again shortly.' })
+    }
+
     try {
-      const recipe = JSON.parse(stripCodeFences(response.output_text))
+      const rawContent = completion?.choices?.[0]?.message?.content
+      const outputText = typeof rawContent === 'string'
+        ? rawContent
+        : Array.isArray(rawContent)
+          ? rawContent.map((part) => part?.text || '').join('')
+          : ''
+      const recipe = JSON.parse(stripCodeFences(outputText))
       if (!isRecipe(recipe)) throw new Error('Unexpected recipe shape')
       return res.json(recipe)
     } catch {
@@ -82,7 +84,7 @@ app.post('/api/analyze', async (req, res) => {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : ''
-    console.error('Recipe analysis failed:', message)
+    console.error('OpenCode recipe analysis failed:', message)
     return res.status(502).json({ error: 'We could not read this dish right now. Please check your connection and try again.' })
   }
 })

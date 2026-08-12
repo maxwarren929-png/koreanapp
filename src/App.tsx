@@ -275,7 +275,7 @@ function App() {
                   <button className="analyze-button" onClick={analyze} disabled={isLoading}>
                     {isLoading ? <><LoaderCircle className="spin" size={18} /> Reading your dish…</> : <><Sparkles size={18} /> Find the recipe <ArrowRight size={18} /></>}
                   </button>
-                  <p className="privacy-note">Your photo is only used to identify this dish.</p>
+                  <p className="privacy-note">Processed by OpenCode MiMo. Avoid uploading personal or sensitive images.</p>
                 </div>
               )}
               {error && (
