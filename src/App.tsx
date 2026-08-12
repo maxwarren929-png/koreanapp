@@ -111,7 +111,7 @@ function App() {
       setView('recipe')
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
-        setError('The free scanner is taking too long. Try again in a moment.')
+        setError('The scanner is taking too long. Try again in a moment.')
       } else {
         setError(err instanceof Error ? err.message : 'Could not scan this dish. Try again.')
       }
