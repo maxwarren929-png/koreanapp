@@ -32,9 +32,8 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
   align-items: center;
   justify-content: space-between;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, .92);
-  border-bottom: 1px solid rgba(232, 233, 237, .82);
-  backdrop-filter: saturate(180%) blur(18px);
+  background: #fff;
+  border-bottom: 1px solid var(--line);
 }
 .wordmark { display: flex; align-items: baseline; gap: 7px; border: 0; padding: 8px 0; background: transparent; cursor: pointer; }
 .wordmark strong { font-size: 18px; letter-spacing: -.035em; }
@@ -46,20 +45,17 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
 .camera-copy h1 { margin: 0; font-size: clamp(31px, 8vw, 42px); letter-spacing: -.055em; line-height: 1; }
 .camera-copy { margin-bottom: 44px; }
 .capture-button {
-  width: 112px;
-  height: 112px;
+  width: 150px;
+  height: 72px;
   display: grid;
   place-items: center;
   border: 0;
-  border-radius: 50%;
+  border-radius: 8px;
   background: var(--blue);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(8, 124, 255, .22);
-  transition: transform 140ms ease, background 140ms ease;
 }
-.capture-button:hover { background: var(--blue-dark); transform: scale(1.025); }
-.capture-button:active { transform: scale(.96); }
+.capture-button:hover { background: var(--blue-dark); }
 .capture-label { margin-top: 16px; color: var(--blue); font-size: 13px; font-weight: 700; }
 
 .camera-view.has-photo { padding: 14px; place-items: stretch; }
@@ -75,9 +71,8 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
   place-items: center;
   border: 0;
   border-radius: 50%;
-  background: rgba(18, 19, 22, .7);
+  background: #1b1c20;
   color: #fff;
-  backdrop-filter: blur(12px);
   cursor: pointer;
 }
 .scan-progress, .scan-error {
@@ -91,15 +86,12 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
   align-items: center;
   transform: translateX(-50%);
   border-radius: 18px;
-  background: rgba(255, 255, 255, .94);
+  background: #fff;
   text-align: center;
-  backdrop-filter: blur(18px);
 }
 .scan-progress svg { margin-bottom: 12px; color: var(--blue); }
 .scan-progress strong, .scan-error strong { font-size: 16px; letter-spacing: -.02em; }
 .scan-progress span { margin-top: 5px; color: var(--muted); font-size: 12px; }
-.spin { animation: spin .9s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
 .scan-error p { margin: 7px 0 17px; color: #5f6269; font-size: 13px; line-height: 1.45; }
 .scan-error > div { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .retry-button, .retake-button, .empty-state button, .scan-another {
@@ -170,9 +162,8 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
   display: grid;
   grid-template-columns: 1fr 1fr;
   transform: translateX(-50%);
-  border-top: 1px solid rgba(232, 233, 237, .9);
-  background: rgba(255, 255, 255, .94);
-  backdrop-filter: saturate(180%) blur(18px);
+  border-top: 1px solid var(--line);
+  background: #fff;
 }
 .tab-bar button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 0; background: transparent; color: #93969d; font-size: 10px; font-weight: 650; cursor: pointer; }
 .tab-bar button.active { color: var(--blue); }
@@ -181,7 +172,6 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
 
 @media (min-width: 700px) {
   .app-shell { background: #f7f8fa; }
-  .app-main, .app-header, .tab-bar { box-shadow: 0 0 0 1px rgba(17, 20, 28, .035); }
   .app-main { background: #fff; }
   .camera-view.has-photo { padding: 24px 44px; }
   .scan-state, .scan-state > img { min-height: calc(100dvh - 196px); }
@@ -193,8 +183,4 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
   .recipe-card { border-right: 0; border-left: 0; border-radius: 0; }
   .recipe-view { padding-right: 0; padding-left: 0; }
   .recipe-toolbar, .scan-another { width: calc(100% - 32px); margin-right: auto; margin-left: auto; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
