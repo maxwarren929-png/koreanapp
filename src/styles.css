@@ -39,14 +39,12 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
 .wordmark { display: flex; align-items: baseline; gap: 7px; border: 0; padding: 8px 0; background: transparent; cursor: pointer; }
 .wordmark strong { font-size: 18px; letter-spacing: -.035em; }
 .wordmark span { color: var(--muted); font-size: 12px; font-weight: 650; }
-.model-status { display: flex; align-items: center; gap: 6px; color: #8b8e95; font-size: 11px; font-weight: 650; }
-.model-status i { width: 6px; height: 6px; border-radius: 50%; background: #30c768; box-shadow: 0 0 0 3px #e7f8ed; }
 
 .app-main { width: min(100%, 760px); min-height: 100dvh; margin: 0 auto; padding: 64px 0 84px; }
 .camera-view { min-height: calc(100dvh - 148px); display: grid; place-items: center; padding: 24px; }
 .capture-state { display: flex; flex-direction: column; align-items: center; text-align: center; transform: translateY(-4vh); }
 .camera-copy h1 { margin: 0; font-size: clamp(31px, 8vw, 42px); letter-spacing: -.055em; line-height: 1; }
-.camera-copy p { margin: 11px 0 44px; color: var(--muted); font-size: 14px; }
+.camera-copy { margin-bottom: 44px; }
 .capture-button {
   width: 112px;
   height: 112px;

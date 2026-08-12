@@ -211,7 +211,6 @@ function App() {
           <strong>Bapsang</strong>
           <span lang="ko">밥상</span>
         </button>
-        <span className="model-status"><i /> MiMo</span>
       </header>
 
       <main className="app-main">
@@ -221,7 +220,6 @@ function App() {
               <div className="capture-state">
                 <div className="camera-copy">
                   <h1>Scan a dish</h1>
-                  <p>Take a photo. Get the recipe.</p>
                 </div>
                 <button className="capture-button" onClick={() => cameraInput.current?.click()} aria-label="Take a photo">
                   <Camera size={42} strokeWidth={1.8} />
