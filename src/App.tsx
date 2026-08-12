@@ -34,6 +34,7 @@ type SavedRecipe = Recipe & {
 type View = 'discover' | 'saved' | 'recipe'
 
 const STORAGE_KEY = 'bapsang-recipes-v1'
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 function BowlMark() {
   return (
@@ -130,7 +131,10 @@ function App() {
     setIsLoading(true)
     setError('')
     try {
-      const response = await fetch('/api/analyze', {
+      if (import.meta.env.PROD && !API_BASE_URL) {
+        throw new Error('The recipe service is still being connected. Add VITE_API_URL in the repository settings and redeploy.')
+      }
+      const response = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image }),

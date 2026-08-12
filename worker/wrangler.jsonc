@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bapsang-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-12",
+  "vars": {
+    "ALLOWED_ORIGIN": "https://maxwarren929-png.github.io"
+  },
+  "secrets": {
+    "required": ["OPENCODE_API_KEY"]
+  }
+}
