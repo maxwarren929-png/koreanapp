@@ -211,6 +211,7 @@ function App() {
           <strong>Bapsang</strong>
           <span lang="ko">밥상</span>
         </button>
+        <span className="creator-credit">Made by Jayden Ko</span>
       </header>
 
       <main className="app-main">

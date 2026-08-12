@@ -38,6 +38,7 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
 .wordmark { display: flex; align-items: baseline; gap: 7px; border: 0; padding: 8px 0; background: transparent; cursor: pointer; }
 .wordmark strong { font-size: 18px; letter-spacing: -.035em; }
 .wordmark span { color: var(--muted); font-size: 12px; font-weight: 650; }
+.creator-credit { color: var(--muted); font-size: 11px; }
 
 .app-main { width: min(100%, 760px); min-height: 100dvh; margin: 0 auto; padding: 64px 0 84px; }
 .camera-view { min-height: calc(100dvh - 148px); display: grid; place-items: center; padding: 24px; }
