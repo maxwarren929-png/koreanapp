@@ -6,7 +6,6 @@ import {
   Camera,
   ChevronRight,
   Library,
-  LoaderCircle,
   RefreshCw,
   Trash2,
   X,
@@ -233,9 +232,7 @@ function App() {
                 <button className="close-photo" onClick={resetCamera} aria-label="Close photo"><X size={20} /></button>
                 {isLoading && (
                   <div className="scan-progress" role="status" aria-live="polite">
-                    <LoaderCircle className="spin" size={30} />
-                    <strong>Scanning dish</strong>
-                    <span>MiMo is building your recipe</span>
+                    <strong>Please wait</strong>
                   </div>
                 )}
                 {error && !isLoading && (

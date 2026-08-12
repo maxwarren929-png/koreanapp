@@ -90,9 +90,7 @@ button:focus-visible { outline: 3px solid rgba(8, 124, 255, .24); outline-offset
   background: #fff;
   text-align: center;
 }
-.scan-progress svg { margin-bottom: 12px; color: var(--blue); }
 .scan-progress strong, .scan-error strong { font-size: 16px; letter-spacing: -.02em; }
-.scan-progress span { margin-top: 5px; color: var(--muted); font-size: 12px; }
 .scan-error p { margin: 7px 0 17px; color: #5f6269; font-size: 13px; line-height: 1.45; }
 .scan-error > div { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .retry-button, .retake-button, .empty-state button, .scan-another {
