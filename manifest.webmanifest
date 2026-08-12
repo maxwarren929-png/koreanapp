@@ -1,0 +1,18 @@
+{
+  "name": "Bapsang",
+  "short_name": "Bapsang",
+  "description": "Scan a Korean dish and get a home-cookable recipe.",
+  "start_url": "/koreanapp/",
+  "scope": "/koreanapp/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

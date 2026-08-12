@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently -k \"vite\" \"node --watch server.mjs\"",
     "build": "tsc -b && vite build",
-    "build:pages": "VITE_BASE_PATH=/koreanapp/ VITE_API_URL=https://bapsang-api.bapsang-api-worker.workers.dev npm run build && node scripts/sync-pages.mjs",
+    "build:pages": "VITE_BASE_PATH=/koreanapp/ VITE_API_URL=https://vercel-api-five-black.vercel.app npm run build && node scripts/sync-pages.mjs",
     "start": "node server.mjs",
     "lint": "eslint ."
   },

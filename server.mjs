@@ -9,13 +9,54 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 app.use(express.json({ limit: '16mb' }))
 
-const prompt = `This image shows a Korean dish. Identify its name in Korean and English. List its likely main ingredients. Then generate a simplified home-cookable recipe with steps, assuming the cook may not have access to specialty Korean ingredients — suggest substitutes where relevant. Respond ONLY with valid JSON in this exact shape: { "name_kr": "", "name_en": "", "ingredients": [], "steps": [], "notes": "" }. No preamble, no markdown fences, just the JSON object.`
+const prompt = `This image shows a Korean dish. Identify its name in Korean and English. List its likely main ingredients. Then generate a simplified home-cookable recipe with steps, assuming the cook may not have access to specialty Korean ingredients — suggest substitutes where relevant. Respond ONLY with valid JSON in this exact shape: { "name_kr": "", "name_en": "", "ingredients": [], "steps": [], "notes": "" }. No preamble, no markdown fences, just the JSON object. /no_think`
 
 const stripCodeFences = (value) => value
   .trim()
   .replace(/^```(?:json)?\s*/i, '')
   .replace(/\s*```$/i, '')
   .trim()
+
+const parseRecipe = (value) => {
+  const cleaned = stripCodeFences(value)
+  const start = cleaned.indexOf('{')
+  const end = cleaned.lastIndexOf('}')
+  if (start < 0 || end <= start) throw new Error('No JSON object returned')
+  return JSON.parse(cleaned.slice(start, end + 1))
+}
+
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
+
+const requestRecipe = async (image) => {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const response = await fetch('https://opencode.ai/zen/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENCODE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: process.env.OPENCODE_MODEL || 'mimo-v2.5-free',
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: image } },
+            { type: 'text', text: prompt },
+          ],
+        }],
+        temperature: 0.2,
+        max_tokens: 4000,
+      }),
+    })
+
+    const completion = await response.json().catch(() => null)
+    if (response.status !== 429 || attempt === 1) return { response, completion }
+
+    const retryAfter = Number(response.headers.get('Retry-After'))
+    const delay = Number.isFinite(retryAfter) ? Math.min(Math.max(retryAfter * 1000, 500), 2000) : 500
+    await wait(delay)
+  }
+}
 
 const isRecipe = (value) => {
   if (!value || typeof value !== 'object') return false
@@ -39,30 +80,13 @@ app.post('/api/analyze', async (req, res) => {
   }
 
   try {
-    const response = await fetch('https://opencode.ai/zen/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENCODE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: process.env.OPENCODE_MODEL || 'mimo-v2.5-free',
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'text', text: prompt },
-            { type: 'image_url', image_url: { url: image } },
-          ],
-        }],
-        temperature: 0.2,
-        max_tokens: 4000,
-      }),
-    })
-
-    const completion = await response.json().catch(() => null)
+    const { response, completion } = await requestRecipe(image)
     if (!response.ok) {
       const providerMessage = completion?.error?.message
       console.error('OpenCode request failed:', response.status, providerMessage || 'Unknown provider error')
+      if (response.status === 429) {
+        return res.status(429).json({ error: 'MiMo is busy right now. Wait a few seconds, then try again.' })
+      }
       if (response.status === 401 || response.status === 403) {
         return res.status(502).json({ error: 'The OpenCode API key was not accepted. Check OPENCODE_API_KEY and try again.' })
       }
@@ -76,7 +100,7 @@ app.post('/api/analyze', async (req, res) => {
         : Array.isArray(rawContent)
           ? rawContent.map((part) => part?.text || '').join('')
           : ''
-      const recipe = JSON.parse(stripCodeFences(outputText))
+      const recipe = parseRecipe(outputText)
       if (!isRecipe(recipe)) throw new Error('Unexpected recipe shape')
       return res.json(recipe)
     } catch {
