@@ -39,11 +39,10 @@ Create a Cloudflare account, then run:
 cd worker
 npm install
 npx wrangler login
-npx wrangler secret put OPENCODE_API_KEY
 npm run deploy
 ```
 
-Paste your OpenCode key only when Wrangler asks for it. The command prints a Worker URL similar to:
+The school-project API key is included directly in the Worker source. The deploy command prints a Worker URL similar to:
 
 `https://bapsang-api.<your-subdomain>.workers.dev`
 
@@ -56,7 +55,7 @@ Name: VITE_API_URL
 Value: https://bapsang-api.<your-subdomain>.workers.dev
 ```
 
-Do not add `OPENCODE_API_KEY` to the Pages workflow. After setting `VITE_API_URL`, run the **Deploy to GitHub Pages** workflow or push a commit to `main`.
+After setting `VITE_API_URL`, run the **Deploy to GitHub Pages** workflow or push a commit to `main`.
 
 In **Settings → Pages**, select **GitHub Actions** as the source if GitHub has not selected it automatically.
 
@@ -73,7 +72,7 @@ The production server uses `PORT` when set and otherwise listens on port `8787`.
 
 ## Data and privacy
 
-- The OpenCode API key stays on the server and is never included in the browser bundle.
+- The school-project OpenCode key is committed in the Worker source and is public. Replace it before using this project for anything sensitive or production-facing.
 - GitHub Pages receives only the public Worker URL through `VITE_API_URL`.
 - Photos are resized in the browser before analysis.
 - Photos are analyzed by OpenCode's free MiMo V2.5 model. OpenCode states that data submitted to this limited-time free model may be used to improve the model, so do not submit personal or confidential images.

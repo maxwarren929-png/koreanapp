@@ -1,4 +1,5 @@
 const prompt = `This image shows a Korean dish. Identify its name in Korean and English. List its likely main ingredients. Then generate a simplified home-cookable recipe with steps, assuming the cook may not have access to specialty Korean ingredients — suggest substitutes where relevant. Respond ONLY with valid JSON in this exact shape: { "name_kr": "", "name_en": "", "ingredients": [], "steps": [], "notes": "" }. No preamble, no markdown fences, just the JSON object.`
+const OPENCODE_API_KEY = 'sk-Q18dVHx6ifgkeWny29sLfMMnOfNiOZZrDBrPEHm8E7UJx9KxtbCOpgX6Z8Hz8ctY'
 
 const stripCodeFences = (value) => value
   .trim()
@@ -50,8 +51,6 @@ export default {
     }
 
     if (!isAllowed) return json({ error: 'Origin not allowed.' }, 403, corsHeaders)
-    if (!env.OPENCODE_API_KEY) return json({ error: 'The recipe service is not configured.' }, 503, corsHeaders)
-
     let image
     try {
       const body = await request.json()
@@ -68,7 +67,7 @@ export default {
       const response = await fetch('https://opencode.ai/zen/v1/chat/completions', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${env.OPENCODE_API_KEY}`,
+          Authorization: `Bearer ${OPENCODE_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
