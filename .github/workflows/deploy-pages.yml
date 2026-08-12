@@ -32,7 +32,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_API_URL: https://bapsang-api.bapsang-api-worker.workers.dev
           VITE_BASE_PATH: /koreanapp/
         run: npm run build
 

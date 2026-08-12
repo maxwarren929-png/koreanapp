@@ -48,14 +48,13 @@ The school-project API key is included directly in the Worker source. The deploy
 
 ### 2. Connect GitHub Pages to the Worker
 
-In the GitHub repository, open **Settings → Secrets and variables → Actions → Variables**, then create:
+The deployed Worker URL is set directly in `.github/workflows/deploy-pages.yml`:
 
 ```text
-Name: VITE_API_URL
-Value: https://bapsang-api.<your-subdomain>.workers.dev
+VITE_API_URL: https://bapsang-api.bapsang-api-worker.workers.dev
 ```
 
-After setting `VITE_API_URL`, run the **Deploy to GitHub Pages** workflow or push a commit to `main`.
+Pushing a commit to `main` runs the **Deploy to GitHub Pages** workflow automatically.
 
 In **Settings → Pages**, select **GitHub Actions** as the source if GitHub has not selected it automatically.
 
